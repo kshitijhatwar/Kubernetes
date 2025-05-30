@@ -1,0 +1,111 @@
+1. What is Kubernetes?
+Kubernetes (abbreviated as K8s) is an open-source container orchestration platform designed to automate the deployment, scaling, and management of containerized applications.
+It was originally developed by Google and is now maintained by the Cloud Native Computing Foundation (CNCF).
+==============================================================================================
+
+2.How does EKS differ from self-managed Kubernetes?
+Amazon EKS (Elastic Kubernetes Service) is a managed Kubernetes service where AWS manages the control plane for you.
+In contrast, with self-managed Kubernetes, you are responsible for setting up, securing, updating, and maintaining the entire cluster, including the control plane and worker nodes.
+Key Differences:		
+		
+Feature	                    | Amazon EKS	                                                         | Self-Managed Kubernetes
+------------------------------------------------------------------------------------------------------------
+Control Plane	              | Managed by AWS (no access to etcd, kube-apiserver, etc.)      	     | Fully managed by you
+High Availability	          | Built-in across multiple AZs by default	                             | You must design and implement it
+Upgrades and Patching	      | AWS handles control plane updates	                                   | You must manage all upgrades
+Monitoring and Logging	    | Integrated with AWS services (CloudWatch, etc.)	                     | You must configure manually
+Cost	                      | Pay for managed control plane + nodes	Only pay for infrastructure,   | but more ops effort
+Flexibility	                | Some limits due to AWS control	                                     | Full customization possible
+IAM Integration	            | Native AWS IAM integration for access control	                       | Needs manual configuration
+====================================================================================================================
+
+3. What components does EKS manage for you?
+In Amazon EKS, AWS fully manages the Kubernetes control plane, which includes the following core components:
+
+EKS-managed components:
+etcd                       – Key-value store that holds all cluster data/state.
+kube-apiserver             – Exposes the Kubernetes API and is the main entry point to the cluster.
+kube-scheduler             – Assigns pods to nodes based on resource availability and constraints.
+kube-controller-manager    – Runs core controllers like node, replication, endpoint controllers.
+High availability and scaling of the control plane across multiple Availability Zones.
+Control plane security patches and upgrades.
+Automatic backups and monitoring of control plane health.
+================================================================================================================
+
+4. How do you create an EKS cluster?
+You can create an Amazon EKS cluster using several methods, including the AWS CLI, eksctl, AWS Management Console, or Infrastructure-as-Code tools like Terraform or CloudFormation.
+Here’s how to do it using eksctl (simpler and more popular).
+
+eksctl create cluster \
+  --name my-cluster \
+  --region us-west-2 \
+  --zones us-west-2a,us-west-2b \
+  --nodegroup-name my-nodes \
+  --node-type t3.medium \
+  --nodes 3 \
+  --nodes-min 2 \
+  --nodes-max 4 \
+  --managed
+=================================================================================================================
+
+5. How do IAM roles integrate with EKS?
+In Amazon EKS, IAM (Identity and Access Management) roles are used to securely control who can access the cluster and what AWS resources Kubernetes workloads(EKS) can interact with.
+
+  There are two major ways IAM integrates with EKS:
+   1. Cluster Access (Authentication)
+EKS uses the AWS IAM system for authentication, not the Kubernetes-native one.
+When a user or system wants to interact with the cluster using kubectl, EKS verifies their identity via IAM roles or users.
+Access is granted by mapping IAM identities to Kubernetes roles using the aws-auth ConfigMap.
+
+  2. IAM Roles for Service Accounts (IRSA)
+IRSA lets Kubernetes pods assume IAM roles securely.
+This allows pods to access AWS services like S3, DynamoDB, SQS, etc., without storing AWS credentials in the pod.
+It uses IAM OpenID Connect (OIDC) integration behind the scenes.
+
+   Typical Use Case:
+You want a pod to write logs to an S3 bucket, so you:
+Create an IAM role with S3 write access.
+Associate that role with a Kubernetes service account.
+Assign the service account to your pod.
+==========================================================================================================================
+
+6. What is the difference between Fargate and EC2-backed nodes in EKS?
+
+In Amazon EKS, workloads (Pods) can run on either:
+Fargate: A serverless compute engine for containers.
+EC2-backed nodes: Managed EC2 instances as worker nodes.
+
+Fargate (Serverless)
+No need to manage servers or clusters — AWS provisions compute automatically.
+You define resource requests (CPU/memory), and AWS handles the rest.
+Ideal for smaller, event-driven, or unpredictable workloads.
+You pay only for the exact resources used per pod.
+Better isolation—each pod gets its own VM-level isolation.
+
+EC2-backed Nodes
+You provision and manage EC2 instances yourself (or via autoscaling groups).
+Provides more flexibility and control (e.g., custom AMIs, GPU nodes, taints/affinities).
+Better suited for large-scale, performance-sensitive, or stateful workloads.
+Requires node group scaling and patching management.
+
+Feature	                         | Fargate	                                            | EC2-backed Nodes
+---------------------------------------------------------------------------------------------------------------------------
+Infrastructure Manageme          | Fully managed (serverless)	                          | You manage EC2 instances
+Scalability	                     | Auto-scales per pod	                                | Auto-scaling groups (manual setup)
+Flexibility	                     | Limited (no DaemonSets, fewer OS customizations)	    | Highly customizable
+Cost Model	                     | Pay per pod (vCPU + memory)	                        | Pay per EC2 instance
+Isolation	                       | Per pod (VM isolation)	                              | Shared across pods on same node
+Startup Time	                   | Slower (cold start time)	                            | Faster for running nodes
+=========================================================================================================================================
+
+7. How do you authenticate users to an EKS cluster?
+In EKS, Kubernetes does not use its own user database for authentication. Instead, EKS integrates with AWS IAM (Identity and Access Management) to authenticate users.
+
+ Authentication Flow in EKS:
+User or role is authenticated using IAM – via AWS CLI or kubectl (configured through aws eks update-kubeconfig).
+EKS uses IAM to verify the user's identity through a signed token.
+EKS uses the aws-auth ConfigMap to map the authenticated IAM user/role to a Kubernetes user or group.
+Kubernetes RBAC (Role-Based Access Control) determines what actions that user can perform.
+
+
+
