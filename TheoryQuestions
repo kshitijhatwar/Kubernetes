@@ -8,15 +8,15 @@ Amazon EKS (Elastic Kubernetes Service) is a managed Kubernetes service where AW
 In contrast, with self-managed Kubernetes, you are responsible for setting up, securing, updating, and maintaining the entire cluster, including the control plane and worker nodes.
 Key Differences:		
 		
-Feature	                    | Amazon EKS	                                                         | Self-Managed Kubernetes
-------------------------------------------------------------------------------------------------------------
-Control Plane	              | Managed by AWS (no access to etcd, kube-apiserver, etc.)      	     | Fully managed by you
-High Availability	          | Built-in across multiple AZs by default	                             | You must design and implement it
-Upgrades and Patching	      | AWS handles control plane updates	                                   | You must manage all upgrades
-Monitoring and Logging	    | Integrated with AWS services (CloudWatch, etc.)	                     | You must configure manually
-Cost	                      | Pay for managed control plane + nodes	Only pay for infrastructure,   | but more ops effort
-Flexibility	                | Some limits due to AWS control	                                     | Full customization possible
-IAM Integration	            | Native AWS IAM integration for access control	                       | Needs manual configuration
+Feature	                         | Amazon EKS	                                                             | Self-Managed Kubernetes
+---------------------------------------------------------------------------------------------------------------------------------------------------
+Control Plane	                 | Managed by AWS (no access to etcd, kube-apiserver, etc.)      	     | Fully managed by you
+High Availability	         | Built-in across multiple AZs by default	                             | You must design and implement it
+Upgrades and Patching	         | AWS handles control plane updates	                                     | You must manage all upgrades
+Monitoring and Logging	         | Integrated with AWS services (CloudWatch, etc.)	                     | You must configure manually
+Cost	                         | Pay for managed control plane + nodes 				     | Only pay for infrastructure, but more ops effort
+Flexibility	                 | Some limits due to AWS control	                                     | Full customization possible
+IAM Integration	                 | Native AWS IAM integration for access control	                     | Needs manual configuration
 ====================================================================================================================
 
 3. What components does EKS manage for you?
@@ -106,6 +106,23 @@ User or role is authenticated using IAM – via AWS CLI or kubectl (configured t
 EKS uses IAM to verify the user's identity through a signed token.
 EKS uses the aws-auth ConfigMap to map the authenticated IAM user/role to a Kubernetes user or group.
 Kubernetes RBAC (Role-Based Access Control) determines what actions that user can perform.
+================================================================================================================================
 
+8. What is the role of the AWS VPC CNI plugin in EKS?
+The AWS VPC CNI plugin (Container Network Interface) is responsible for networking in Amazon EKS.
+It enables pods to get IP addresses directly from the VPC, making them first-class citizens in your AWS network.
 
+Key Roles of the AWS VPC CNI Plugin:-
+Assigns VPC IP addresses to Pods:
+	Each pod gets an ENI (Elastic Network Interface) with VPC-level IPs.
+	This means pods can directly communicate with other AWS resources (e.g., RDS, S3) using native VPC networking.
+Manages ENIs and IP address allocation:
+	The plugin dynamically attaches ENIs to worker nodes and allocates secondary IPs for pods.
+	It optimizes IP usage based on the instance type limits.
+Enables native integration with AWS networking:
+	Pods can be secured using VPC security groups and network ACLs.
+	Supports features like PrivateLink, VPC Peering, and Direct Connect.
+==========================================================================================================================================
+
+9. 
 
