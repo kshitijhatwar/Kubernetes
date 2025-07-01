@@ -10,5 +10,6 @@ nodes:
 - role: worker
 - role: worker
 
-
+#save this file with name clusterconfig.yml
+# Use this command             #kind create cluster --name my-cluster --config=clusterconfig.yml
 # This will create 2 masternode cluster and 5 worker nodes.
