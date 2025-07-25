@@ -3,7 +3,7 @@ kubectl describe <resource_type> <resource_name> -n <namespace>
 #<resource_name>: the specific name of the resource.
 #-n <namespace>: optional, specifies the namespace (default is default).
 # kubectl describe is a powerful Kubernetes CLI command that provides detailed information about a specific Kubernetes resource. It goes beyond kubectl get by offering a deep dive into the current state, events, conditions, and configurations of a resource.
-#---------------------------------------------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------#--------------------------------------------------
 kubectl get events
 #This lists cluster events such as pod creation, failures, scheduling issues, container restarts, etc.
 #
