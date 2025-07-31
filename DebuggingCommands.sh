@@ -11,6 +11,12 @@ kubectl get events
 kubectl get pods --show-labels
 #used to list all the pods in your Kubernetes cluster along with their associated labels. Labels are key-value pairs attached to objects like pods, which help in organizing and selecting subsets of objects.
 #
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+kubectl rollout status deployment my-app
+kubectl get pods -l app=my-app
+#To Watch a Rolling Update
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 
