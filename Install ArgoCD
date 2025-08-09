@@ -1,0 +1,24 @@
+### Create Argo CD namespace
+kubectl create namespace argocd
+
+###Install Argo CD components
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+###Expose SVC via NOdePort
+kubectl edit svc argocd-server -n argocd
+
+##This will open editor change:
+#type: ClusterIP   - to -    type: NodePort
+#ports:
+#  - name: https
+#    port: 443
+#    targetPort: 8080
+#    protocol: TCP
+#    nodePort: 30080
+## Now you cann access ArgoCD UI via browser on 30080 port
+
+###Get the admin password
+kubectl get secret argocd-initial-admin-secret -n argocd \
+  -o jsonpath="{.data.password}" | base64 -d; echo
+
+
