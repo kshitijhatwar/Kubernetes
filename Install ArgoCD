@@ -1,10 +1,10 @@
 ### Create Argo CD namespace
 kubectl create namespace argocd
 
-###Install Argo CD components
+###Install Argo CD components:
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-###Expose SVC via NOdePort
+###Expose SVC via NOdePort:
 kubectl edit svc argocd-server -n argocd
 
 ##This will open editor change:
@@ -17,8 +17,18 @@ kubectl edit svc argocd-server -n argocd
 #    nodePort: 30080
 ## Now you cann access ArgoCD UI via browser on 30080 port
 
-###Get the admin password
+###Get the admin password:
 kubectl get secret argocd-initial-admin-secret -n argocd \
   -o jsonpath="{.data.password}" | base64 -d; echo
+
+###Install ArgoCD CLI:
+VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | grep tag_name | cut -d '"' -f 4)
+curl -sSL -o /tmp/argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64
+sudo install -m 555 /tmp/argocd-linux-amd64 /usr/local/bin/argocd
+
+###Login to ArgoCD CLI:
+argocd login localhost:30011 --username admin --password Test@123 --insecure
+
+###
 
 
