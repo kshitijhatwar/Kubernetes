@@ -1,0 +1,69 @@
+### To backup ETCD
+
+# 1. Set API version (etcdctl v3 is default in Kubernetes)
+export ETCDCTL_API=3
+# 2. Set etcd endpoint (usually localhost:2379 on control-plane nodes)
+export ETCDCTL_ENDPOINTS="https://127.0.0.1:2379"
+# 3. Set certificates (Kubernetes stores them in /etc/kubernetes/pki/etcd/)
+export ETCDCTL_CERT=/etc/kubernetes/pki/etcd/server.crt
+export ETCDCTL_KEY=/etc/kubernetes/pki/etcd/server.key
+export ETCDCTL_CACERT=/etc/kubernetes/pki/etcd/ca.crt
+
+#save snapshot command:
+etcdctl snapshot save /var/tmp/etcd-backup.db \
+  --endpoints=$ETCDCTL_ENDPOINTS \
+  --cert=$ETCDCTL_CERT \
+  --key=$ETCDCTL_KEY \
+  --cacert=$ETCDCTL_CACERT
+
+#----------------------------------------------------------------------------------------------------------
+### Restore Backup:-
+
+# 1. stop kubelete on master01
+sudo systemctl stop kubelete
+# 2. move etcd, api-server,scheduller, comtroller manifest out from/etc/kubeernetes/manifest
+sudo mv /etc/kubernetes/manifests/*.yaml /var/tmp/k8-manifest/
+# 3. move etcd data
+sudo mv /var/lib/etcd /var/lib/etcd.old
+# 4. restore etcd with snapshot
+ETCDCTL_API=3
+
+sudo etcdctl snapshot restore /var/tmp/etcd-backup.db \
+  --data-dir="/var/lib/etcd" \
+  --initial-cluster="k8-masternode01=https://10.0.3.142:2380,k8-masternode02=https://10.0.2.143:2380,k8-masternode03=https://10.0.2.144:2380" \
+  --initial-cluster-token="etcd-cluster-1" \
+  --initial-advertise-peer-urls="https://10.0.3.142:2380" \
+  --name="k8-masternode01"
+# 4. move back all manifest to /etc/kubernetes/manifest
+sudo mv /var/tmp/k8-manifest/*.yaml /etc/kubernetes/manifest
+# 5. start kubelete
+sudo systemctl start kubelete
+# 6. check etcd cluster health
+sudo ETCDCTL_API=3 etcdctl endpoint health \
+  --endpoints=https://10.0.3.142:2379,https://10.0.2.143:2379,https://10.0.2.144:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key
+#---------------------------------------------
+##  Now on other control nodes(we do not need to restore backup on all master nodes, let other nodes sync up with leader)
+# 7.stop kubelete
+sudo systemctl stop kubelete
+# 8. move etcd data
+sudo mv /var/lib/etcd /var/lib/etcd.old
+# 9. start kubelete
+sudo systemctl start kubelete
+-----------------------------------------
+### we can check ETCD leader with this command:
+sudo ETCDCTL_API=3 etcdctl endpoint status \
+  --endpoints=https://10.0.3.142:2379,https://10.0.2.143:2379,https://10.0.2.144:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/peer.crt \
+  --key=/etc/kubernetes/pki/etcd/peer.key \
+  -w table
+
+
+
+
+
+
+
