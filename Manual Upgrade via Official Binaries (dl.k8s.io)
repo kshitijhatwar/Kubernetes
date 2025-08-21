@@ -1,0 +1,23 @@
+## Download latest kubeadm(change version)
+curl -LO "https://dl.k8s.io/release/v1.33.4/bin/linux/amd64/kubeadm"
+sudo install -o root -g root -m 0755 kubeadm /usr/bin/kubeadm
+
+---------------------------------------------------
+##Upgrade node
+sudo kubeadm upgrade node
+
+------------------------------------------------------
+## Download & install kubelet and kubectl(change version)
+curl -LO "https://dl.k8s.io/release/v1.33.4/bin/linux/amd64/kubelet"
+sudo install -o root -g root -m 0755 kubelet /usr/bin/kubelet
+
+curl -LO "https://dl.k8s.io/release/v1.33.4/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+
+--------------------------------------------------------------------------
+## Restart kublete
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+-------------------------------------------------------------------
+
