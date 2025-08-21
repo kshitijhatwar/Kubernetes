@@ -1,0 +1,20 @@
+#Cordon (disable scheduling):
+kubectl cordon <node-name>
+
+----------------------------------------
+#Drain (cordon + evict pods safely):
+kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data
+
+--------------------------------------------------
+# Uncordon
+kubectl uncordon <node-name>
+
+------------------------------------------------
+#Full cleanup of everything (except system components):
+kubectl delete all --all --all-namespaces
+kubectl delete statefulset --all --all-namespaces
+kubectl delete pvc --all --all-namespaces
+kubectl delete pv --all
+
+--------------------------------------------------------
+#
