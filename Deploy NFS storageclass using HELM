@@ -1,0 +1,12 @@
+### Add the Helm repo
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+helm repo update
+
+### Install the NFS provisioner (Replace with your NFS server IP and path.)
+helm install nfs-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+  --set nfs.server=10.0.3.143 \
+  --set nfs.path=/home/kshitijh/k8-storage \
+  --set storageClass.name=nfs-client \
+  --set storageClass.defaultClass=true
+
+###
