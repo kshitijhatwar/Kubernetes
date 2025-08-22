@@ -1,6 +1,6 @@
 ### To backup ETCD
 
-# 1. Set API version (etcdctl v3 is default in Kubernetes)
+## 1. Set API version (etcdctl v3 is default in Kubernetes)
 export ETCDCTL_API=3
 # 2. Set etcd endpoint (usually localhost:2379 on control-plane nodes)
 export ETCDCTL_ENDPOINTS="https://127.0.0.1:2379"
