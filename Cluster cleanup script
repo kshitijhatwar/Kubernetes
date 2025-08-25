@@ -1,4 +1,4 @@
-#!/bin/bash
+##!/bin/bash
 # Kubernetes cluster cleanup script for kubeadm-based clusters
 # Run as root or with sudo
 
