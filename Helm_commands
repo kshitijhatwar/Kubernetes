@@ -1,0 +1,64 @@
+# List all deployed releases across all namespaces
+helm list --all-namespaces
+
+# List releases in a specific namespace
+helm list -n dev
+
+# Show the status of a release
+helm status myrelease -n dev
+
+# Show all resources created by a release
+helm get manifest myrelease -n dev
+
+# Get values used by a release (including overrides)
+helm get values myrelease -n dev
+
+# Show all history of a release
+helm history myrelease -n dev
+
+# Install a new release from a chart
+helm install myrelease ./mychart -n dev
+
+# Upgrade a release with updated chart/values
+helm upgrade myrelease ./mychart -n dev
+
+# Upgrade with a specific values file
+helm upgrade myrelease ./mychart -f-values custom-values.yaml -n dev
+
+# Check chart templates with release name & values
+helm template myrelease ./mychart -n dev
+
+# Simulate an install/upgrade without applying
+helm install myrelease ./mychart -n dev --dry-run --debug
+helm upgrade myrelease ./mychart -n dev --dry-run --debug
+
+# Show rendered templates
+helm get manifest myrelease -n dev
+
+# Uninstall a release
+helm uninstall myrelease -n dev
+
+# Uninstall and keep history
+helm uninstall myrelease -n dev --keep-history
+
+# Delete all releases in a namespace
+helm list -n dev -q | xargs -L1 helm uninstall -n dev
+
+# If upgrade fails, rollback to previous revision
+helm rollback myrelease 1 -n dev
+
+# Create a new chart
+helm create mychart
+
+# Package chart into a .tgz
+helm package ./mychart
+
+# Lint a chart (validate syntax & best practices)
+helm lint ./mychart
+
+# Search charts from Artifact Hub
+helm search hub nginx
+
+# Search charts from a repo
+helm search repo nginx
+
