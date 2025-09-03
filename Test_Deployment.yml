@@ -5,19 +5,18 @@ metadata:
   labels:
     app: nginx-non
 spec:
-  clusterIP: None   # 👈 makes it a headless service
   selector:
     app: nginx-non
   ports:
-  - port: 81
+  - port: 80
+    targetPort: 81
     name: web
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: nginx-Deployment
 spec:
-  serviceName: "nginx-non-headless"   # 👈 must match service name
   replicas: 3
   selector:
     matchLabels:
@@ -33,3 +32,4 @@ spec:
         ports:
         - containerPort: 80
           name: web
+
