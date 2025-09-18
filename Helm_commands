@@ -1,4 +1,4 @@
-# List all deployed releases across all namespaces
+## List all deployed releases across all namespaces
 helm list --all-namespaces
 
 # List releases in a specific namespace
