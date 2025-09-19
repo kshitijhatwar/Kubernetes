@@ -22,3 +22,7 @@ kubectl delete pv --all
 
 curl --cacert /etc/kubernetes/pki/ca.crt --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key https://10.0.2.142:6443/api/v1/nodes | jq -r '.items[] | "\(.metadata.name) \(.status.conditions[] | select(.type=="Ready").status)"'
 -----------------------------------------------------------------
+# Preview changes before applying them to our Kubernetes cluster:
+kubectl diff -f <file-name>
+
+----------------------------------------------------------------------------
