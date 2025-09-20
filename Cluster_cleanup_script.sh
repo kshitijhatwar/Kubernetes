@@ -7,7 +7,7 @@ kubeadm reset -f
 
 echo "[INFO] Stopping kubelet and container runtime..."
 systemctl stop kubelet
-systemctl stop containerd 2>/dev/null || systemctl stop docker 2>/dev/null
+systemctl restart containerd 2>/dev/null || systemctl restart docker 2>/dev/null
 
 echo "[INFO] Removing Kubernetes config and data..."
 rm -rf /etc/kubernetes/ \
