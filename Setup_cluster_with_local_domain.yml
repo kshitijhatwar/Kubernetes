@@ -1,7 +1,7 @@
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: stable
-controlPlaneEndpoint: "10.0.2.142:6443"   # Use HAProxy IP/DNS here
+controlPlaneEndpoint: "10.0.3.1:6443"   # Use HAProxy IP/DNS here
 networking:
   dnsDomain: "myk8s.kshitijhatwar.xyz"                    
   podSubnet: "10.244.0.0/16"                
