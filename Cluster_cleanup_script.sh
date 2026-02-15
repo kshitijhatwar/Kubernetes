@@ -3,14 +3,14 @@
 # Run as root or with sudo
 
 echo "[INFO] Resetting kubeadm..."
-kubeadm reset -f
+sudo kubeadm reset -f
 
 echo "[INFO] Stopping kubelet and container runtime..."
-systemctl stop kubelet
-systemctl restart containerd 2>/dev/null || systemctl restart docker 2>/dev/null
+sudo systemctl stop kubelet
+sudo systemctl restart containerd 2>/dev/null || systemctl restart docker 2>/dev/null
 
 echo "[INFO] Removing Kubernetes config and data..."
-rm -rf /etc/kubernetes/ \
+sudo rm -rf /etc/kubernetes/ \
        /var/lib/etcd \
        /var/lib/kubelet/* \
        /etc/cni/net.d \
@@ -19,14 +19,14 @@ rm -rf /etc/kubernetes/ \
        ~/.kube
 
 echo "[INFO] Flushing iptables..."
-iptables -F
-iptables -t nat -F
-iptables -t mangle -F
-iptables -X
+sudo iptables -F
+sudo  iptables -t nat -F
+sudo iptables -t mangle -F
+sudo iptables -X
 
 echo "[INFO] Removing CNI network interfaces..."
-ip link delete cni0 2>/dev/null
-ip link delete flannel.1 2>/dev/null
-ip link delete weave 2>/dev/null
+sudo ip link delete cni0 2>/dev/null
+sudo ip link delete flannel.1 2>/dev/null
+sudo ip link delete weave 2>/dev/null
 
 echo "[INFO] Kubernetes cleanup complete on $(hostname)"
